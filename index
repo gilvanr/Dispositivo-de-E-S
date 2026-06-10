@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Módulos de E/S - Arquitetura de Computadores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #eee;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #ffd89b, #c7e9fb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitulo {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #bbd4e3;
+            font-style: italic;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: rgba(20, 30, 40, 0.8);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            flex: 1 1 280px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 5px solid #f39c12;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            background: rgba(30, 45, 55, 0.9);
+        }
+
+        .card h3 {
+            font-size: 1.6rem;
+            border-bottom: 2px solid #f39c12;
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #f7d44a;
+        }
+
+        .exemplo-box {
+            background: #0a1a1f;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            border: 1px solid #2c6e6e;
+        }
+
+        .diagrama {
+            background: #071217;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .barramento {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .barramento-item {
+            background: #2c3e50;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .simulador {
+            background: #031016;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        button {
+            background: #e67e22;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #f39c12;
+            transform: scale(1.02);
+        }
+
+        .console {
+            background: #000000aa;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            border-left: 4px solid #f1c40f;
+        }
+
+        .status-led {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: gray;
+            margin-right: 8px;
+        }
+
+        .led-verde {
+            background-color: #2ecc71;
+            box-shadow: 0 0 5px #2ecc71;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem;
+            }
+            .card {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🖥️ Módulos de Entrada/Saída (E/S)</h1>
+    <div class="subtitulo">Arquitetura de Computadores — O papel essencial da comunicação com periféricos</div>
+
+    <!-- Questão 17 -->
+    <div class="card">
+        <h3>📌 17) Principal função de um Módulo de E/S</h3>
+        <p>Um <strong>módulo de E/S</strong> atua como <strong>intermediário</strong> entre o barramento do sistema (CPU + memória) e os dispositivos periféricos. Sua principal função é <span style="color:#f9e45b;">gerenciar a transferência de dados</span>, resolvendo diferenças de velocidade, formato e sincronismo.</p>
+        <div class="exemplo-box">
+            🖱️ Exemplo: Quando você digita no teclado, o módulo de E/S (controlador do teclado) recebe o código da tecla, armazena em um registrador e depois avisa a CPU via interrupção.<br>
+            ➡️ <strong>Resumo:</strong> Possibilitar comunicação confiável entre CPU/memória e dispositivos externos.
+        </div>
+    </div>
+
+    <!-- Questão 18 -->
+    <div class="card">
+        <h3>⚠️ 18) Por que não conectar dispositivos diretamente no barramento?</h3>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+            <li><strong>1. Diversidade de sinais e temporização:</strong> Dispositivos como mouse, impressora, HD operam com tensões, velocidades e protocolos totalmente diferentes. O barramento do sistema é padronizado para alta velocidade e comunicação paralela com CPU/memória.</li>
+            <li><strong>2. Grande diferença de velocidade:</strong> A CPU trabalha em GHz, enquanto teclados, sensores ou impressoras são extremamente lentos (ms). Conectar diretamente causaria bloqueios constantes da CPU, reduzindo drasticamente o desempenho.</li>
+        </ul>
+        <div class="exemplo-box">
+            🔌 Analogia: Imagine conectar uma mangueira de jardim diretamente no cano principal de alta pressão de uma hidrelétrica. O módulo de E/S funciona como um "adaptador" e "válvula" que controla o fluxo e a compatibilidade.
+        </div>
+    </div>
+
+    <!-- Questão 19 -->
+    <div class="card">
+        <h3>⚙️ 19) Três funções dos Módulos de E/S</h3>
+        <ol style="margin-left: 1.5rem;">
+            <li><strong>Controle e temporização:</strong> Coordena o fluxo de dados entre o barramento do sistema e o dispositivo, respeitando os tempos de cada lado.</li>
+            <li><strong>Comunicação com a CPU:</strong> Através de comandos (leitura, escrita, reset) e troca de status (pronto/ocupado) usando registradores de controle/estado.</li>
+            <li><strong>Detecção de erros:</strong> Verifica erros de transmissão (paridade, CRC) e informa a CPU para tomar ações corretivas.</li>
+        </ol>
+        <div class="exemplo-box">
+            📀 Exemplo prático: Controladora de disco rígido (SATA/NVMe). Ela temporiza a leitura dos setores, avisa a CPU quando o dado está pronto e detecta setores defeituosos.
+        </div>
+    </div>
+
+    <!-- Questão 20 - Dois componentes explicados -->
+    <div class="card">
+        <h3>🔧 20) Componentes internos do Módulo de E/S</h3>
+        <p><strong>✅ 1. Registradores de dados:</strong> Armazenam temporariamente os dados que trafegam entre o dispositivo externo e o barramento do sistema. Funcionam como um buffer pequeno para sincronização.</p>
+        <p><strong>✅ 2. Registradores de estado/controle:</strong> Contêm bits de status (ex: "pronto", "ocupado", "erro") e bits de controle (ex: "reset", "habilita interrupção"). A CPU lê esses registradores para saber se o módulo pode enviar/receber dados.</p>
+        <div class="exemplo-box">
+            🧩 Exemplo didático: Em um mouse USB, o registrador de dados guarda o movimento (delta X/Y). O registrador de estado indica se há novo dado disponível. A CPU lê o estado, depois os dados.
+        </div>
+    </div>
+
+    <!-- SEÇÃO DIDÁTICA INTERATIVA COM SIMULAÇÃO DE MÓDULO DE E/S -->
+    <div class="simulador">
+        <h3>🎮 Simulador Didático: Módulo de E/S e Comunicação CPU ↔ Dispositivo</h3>
+        <p>Clique nos botões para simular o envio de dados de um <strong>dispositivo (mouse/teclado fictício)</strong> para a CPU através do Módulo de E/S.<br>
+        <small>✓ O módulo utiliza: <strong>Registrador de Dados</strong> (buffer) e <strong>Registrador de Estado</strong> (pronto/ocupado).</small></p>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between;">
+            <!-- Coluna do dispositivo externo -->
+            <div style="flex:1; background:#08232c; border-radius: 1rem; padding: 1rem;">
+                <h4>🖱️ Dispositivo Externo (Teclado/Mouse)</h4>
+                <p>Novo dado gerado: <strong id="dadoGerado">[nenhum]</strong></p>
+                <button id="btnGerarDado">🔘 Gerar dado aleatório (ex: tecla pressionada)</button>
+                <div style="margin-top: 10px;">
+                    <small>Exemplo: caractere ASCII ou movimento do mouse</small>
+                </div>
+            </div>
+            
+            <!-- Módulo de E/S -->
+            <div style="flex:1.5; background:#0e3b42; border-radius: 1rem; padding: 1rem;">
+                <h4>📦 Módulo de E/S (Controlador)</h4>
+                <div style="background:#00000066; padding: 10px; border-radius: 12px;">
+                    <p>📝 <strong>Registrador de Dados</strong>: <span id="regData" style="background:#000; padding:4px 10px; border-radius: 16px; font-family:monospace;">0x00 (vazio)</span></p>
+                    <p>🔍 <strong>Registrador de Estado</strong>: 
+                        <span id="regStatusBit" class="status-led"></span>
+                        <span id="regStatusTexto">Pronto para receber</span>
+                    </p>
+                    <p>⚙️ <strong>Lógica de E/S</strong>: <span id="logicaStatus">Aguardando dado</span></p>
+                    <button id="btnTransferirParaCPU" style="background:#1e6f5c;">📤 CPU lê dados via barramento</button>
+                    <button id="btnResetar" style="background:#4a627a;">🔄 Resetar módulo</button>
+                </div>
+                <div class="exemplo-box" style="margin-top: 8px; font-size:0.8rem;">
+                    💡 Funcionamento: Ao gerar dado, o módulo armazena no <strong>Registrador de Dados</strong> e atualiza estado -> "Dado Pronto".<br>
+                    A CPU (simulada) ao ler o dado, o módulo limpa o registrador de estado e fica pronto para novo dado.
+                </div>
+            </div>
+            
+            <!-- CPU + Barramento -->
+            <div style="flex:1; background:#0a2f36; border-radius: 1rem; padding: 1rem;">
+                <h4>🧠 CPU e Barramento do Sistema</h4>
+                <p>Último dado lido pela CPU: <strong id="cpuLeitura">---</strong></p>
+                <div class="barramento">
+                    <span class="barramento-item">🔌 Barramento dados</span>
+                    <span class="barramento-item">🔌 Barramento endereços</span>
+                    <span class="barramento-item">🔌 Barramento controle</span>
+                </div>
+                <p style="font-size: 0.85rem;">A CPU periodicamente verifica o Registrador de Estado (polling) ou recebe interrupção.<br>
+                Neste simulador, clique em "CPU lê dados" para simular a leitura.</p>
+            </div>
+        </div>
+        <!-- Console de eventos -->
+        <div class="console" id="consoleLog">
+            [Sistema] Simulador de Módulo de E/S pronto. Use os botões.
+        </div>
+    </div>
+
+    <!-- Explicação do diagrama arquitetural interativo -->
+    <div class="diagrama">
+        <h3>🏛️ Arquitetura simplificada: CPU ↔ Barramento ↔ Módulo de E/S ↔ Dispositivo</h3>
+        <pre style="color:#c2e0f0; background:#021016; padding: 1rem; border-radius: 1rem; text-align: left; overflow-x: auto;">
+ ┌─────────┐    Barramento do Sistema    ┌──────────────────┐      ┌─────────────┐
+ │   CPU   │◄──────────────────────────►│  MÓDULO DE E/S    │◄────►│ Dispositivo │
+ │         │  (Dados, Endereços, Ctrl)   │ ┌───────────────┐ │      │   Externo   │
+ └─────────┘                             │ │Registrador    │ │      │ (Teclado,   │
+                                         │ │de Dados       │ │      │  Mouse, HD) │
+                                         │ ├───────────────┤ │      └─────────────┘
+                                         │ │Registrador    │ │
+                                         │ │Estado/Controle│ │
+                                         │ ├───────────────┤ │
+                                         │ │Lógica de E/S  │ │
+                                         │ │e Interface    │ │
+                                         │ └───────────────┘ │
+                                         └──────────────────┘
+        </pre>
+        <p>✅ O módulo converte sinais, sincroniza velocidades e gerencia buffers, evitando que a CPU espere por dispositivos lentos.</p>
+    </div>
+
+    <!-- Explicação adicional dos motivos, com exemplos visuais -->
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0;">
+        <div style="flex:1; background:#0b262e; border-radius: 1rem; padding: 1rem;">
+            <h4>🚦 Motivo 1: Diferença elétrica/temporização</h4>
+            <p>Barramento PCIe opera a 16 GT/s (transações por segundo), enquanto um mouse PS/2 opera a 10-20 kHz. <strong>Módulo de E/S faz a "tradução"</strong> de protocolos.</p>
+        </div>
+        <div style="flex:1; background:#0b262e; border-radius: 1rem; padding: 1rem;">
+            <h4>⏱️ Motivo 2: Bloqueio de desempenho</h4>
+            <p>Se a CPU esperasse uma impressora para cada caractere, o sistema travaria. O módulo de E/S realiza <strong>buffering</strong> e interrupções.</p>
+        </div>
+        <div style="flex:1; background:#0b262e; border-radius: 1rem; padding: 1rem;">
+            <h4>🔁 Funções extras relevantes</h4>
+            <p>Além das 3 citadas: decodificação de endereços, formatação de dados (serial/parallel) e gerenciamento de interrupções.</p>
+        </div>
+    </div>
+
+    <footer>
+        Aula interativa baseada nos conceitos de Tanenbaum, Stallings e Patterson & Hennessy. Utilize a simulação para fixar o papel dos registradores e do módulo de E/S.
+    </footer>
+</div>
+
+<script>
+    // Simulação completa do módulo de E/S com os componentes citados
+    // Estados: 
+    // - registradorDados: valor armazenado (0-255)
+    // - status: "pronto" para novo dado, "dado_disponivel" aguardando leitura da CPU
+    // Lógica de E/S realiza a transferência e atualiza status.
+    
+    let registradorDados = null;        // null = vazio, caso contrário armazena um número/valor
+    let estadoRegStatus = "pronto";     // "pronto" ou "dado_disponivel"
+    let ultimoDadoGerado = null;        // exibe o dado criado externamente
+    
+    const regDataSpan = document.getElementById("regData");
+    const regStatusLed = document.getElementById("regStatusBit");
+    const regStatusTexto = document.getElementById("regStatusTexto");
+    const logicaStatusSpan = document.getElementById("logicaStatus");
+    const cpuLeituraSpan = document.getElementById("cpuLeitura");
+    const dadoGeradoSpan = document.getElementById("dadoGerado");
+    const consoleLogDiv = document.getElementById("consoleLog");
+    
+    function adicionarLog(mensagem, tipo = "info") {
+        const logEntry = document.createElement("div");
+        const timestamp = new Date().toLocaleTimeString();
+        logEntry.textContent = `[${timestamp}] ${mensagem}`;
+        if (tipo === "erro") logEntry.style.color = "#f99";
+        else if (tipo === "sucesso") logEntry.style.color = "#9f9";
+        else logEntry.style.color = "#ccf";
+        consoleLogDiv.appendChild(logEntry);
+        consoleLogDiv.scrollTop = consoleLogDiv.scrollHeight;
+        // limitar linhas (opcional)
+        while (consoleLogDiv.children.length > 12) {
+            consoleLogDiv.removeChild(consoleLogDiv.firstChild);
+        }
+    }
+    
+    function atualizarInterface() {
+        // Atualiza visual do registrador de dados
+        if (registradorDados === null) {
+            regDataSpan.innerHTML = "0x00 (vazio)";
+        } else {
+            let hexVal = "0x" + registradorDados.toString(16).toUpperCase().padStart(2,'0');
+            let asciiVal = (registradorDados >= 32 && registradorDados <= 126) ? String.fromCharCode(registradorDados) : "?";
+            regDataSpan.innerHTML = `${hexVal} (${asciiVal}) [decimal:${registradorDados}]`;
+        }
+        
+        // Atualiza registrador de estado
+        if (estadoRegStatus === "pronto") {
+            regStatusLed.className = "status-led";
+            regStatusTexto.innerText = "Pronto para novo dado";
+            logicaStatusSpan.innerText = "Esperando dado do dispositivo...";
+        } else if (estadoRegStatus === "dado_disponivel") {
+            regStatusLed.className = "status-led led-verde";
+            regStatusTexto.innerText = "⚠️ Dado disponível para CPU ler!";
+            logicaStatusSpan.innerText = "Dado armazenado, aguardando leitura da CPU.";
+        }
+    }
+    
+    // Função simulando o dispositivo externo gerando dado
+    function gerarDadoExterno() {
+        // só pode gerar dado se o módulo estiver pronto para receber novo dado (estado = pronto)
+        if (estadoRegStatus !== "pronto") {
+            adicionarLog("Dispositivo tentou enviar dado, mas módulo está ocupado (dado não lido pela CPU ainda). Aguarde a CPU ler.", "erro");
+            return false;
+        }
+        // Gera um dado aleatório: número entre 32 e 122 (caracteres imprimíveis e números)
+        const novoDado = Math.floor(Math.random() * (122 - 32 + 1) + 32);
+        // Também pode ser qualquer valor, mas vamos manter como se fosse tecla
+        registradorDados = novoDado;
+        estadoRegStatus = "dado_disponivel";
+        ultimoDadoGerado = novoDado;
+        let caractere = String.fromCharCode(novoDado);
+        dadoGeradoSpan.innerHTML = `'${caractere}' (código ${novoDado})`;
+        adicionarLog(`📟 Dispositivo externo gerou dado: '${caractere}' (${novoDado}). Módulo armazenou no REGISTRADOR DE DADOS e setou estado = DADO PRONTO.`, "sucesso");
+        atualizarInterface();
+        return true;
+    }
+    
+    // Função que simula a CPU lendo o dado via barramento
+    function cpuLerDado() {
+        if (estadoRegStatus !== "dado_disponivel") {
+            adicionarLog("CPU tentou ler dados, mas registrador de estado indica NENHUM DADO PRONTO. Módulo está vazio ou em espera.", "erro");
+            cpuLeituraSpan.innerHTML = "--- (sem dado)";
+            return;
+        }
+        // CPU lê o valor do registrador de dados
+        const dadoLido = registradorDados;
+        const caractereLido = (dadoLido !== null && dadoLido >= 32 && dadoLido <= 126) ? String.fromCharCode(dadoLido) : "não imprimível";
+        cpuLeituraSpan.innerHTML = `${caractereLido} (código ${dadoLido})`;
+        adicionarLog(`🧠 CPU realizou leitura via barramento: dado '${caractereLido}' (${dadoLido}). Módulo de E/S limpa registrador de estado e fica pronto.`, "sucesso");
+        // Após leitura, o módulo limpa o registrador de dados e estado volta a "pronto"
+        registradorDados = null;
+        estadoRegStatus = "pronto";
+        atualizarInterface();
+    }
+    
+    function resetarModulo() {
+        registradorDados = null;
+        estadoRegStatus = "pronto";
+        ultimoDadoGerado = null;
+        dadoGeradoSpan.innerHTML = "[nenhum]";
+        cpuLeituraSpan.innerHTML = "---";
+        adicionarLog("🔄 Módulo de E/S resetado. Registrador de dados zerado, estado = PRONTO.", "info");
+        atualizarInterface();
+    }
+    
+    // Adicionando listeners aos botões
+    document.getElementById("btnGerarDado").addEventListener("click", () => {
+        gerarDadoExterno();
+    });
+    document.getElementById("btnTransferirParaCPU").addEventListener("click", () => {
+        cpuLerDado();
+    });
+    document.getElementById("btnResetar").addEventListener("click", () => {
+        resetarModulo();
+    });
+    
+    // Inicialização
+    resetarModulo(); // estado inicial limpo
+    adicionarLog("🔌 Aula interativa: módulo E/S com Registradores de Dados e Estado/Controle. Simule a comunicação!");
+    adicionarLog("💡 Dica: Gere um dado (dispositivo externo) → CPU lê → o módulo fica pronto novamente.");
+    
+    // Exemplo extra: demonstrar que não é possível escrever direto no barramento
+    setTimeout(() => {
+        adicionarLog("✨ Conceito: Se conectássemos diretamente o teclado ao barramento da CPU, o sistema pararia até cada tecla. Módulo de E/S soluciona isso.", "info");
+    }, 1000);
+</script>
+</body>
+</html>
